@@ -84,7 +84,7 @@ def dns_lookup(url, progress_count, total_count, csvfile, log, server=None):
         result.ip_connect = ip_connect(result.ips)
         if result.ip_connect:
             # IP connection successful, now check URL keyword filtering
-            result.url_keyword = url_keyword(url)
+            result.url_keyword = url_keyword(url, log)
             # Now check HTTP status
             result.http_code, result.redirect_ip = http_status(url, log)
     except dns.resolver.NXDOMAIN:
@@ -95,6 +95,8 @@ def dns_lookup(url, progress_count, total_count, csvfile, log, server=None):
         result.dns_lookup_failure = 'EmptyLabel'
     except dns.exception.Timeout:
         result.dns_lookup_failure = 'Timeout'
+    except Exception as e:
+        log.error(str(e) + ' URL: %s' % url)
     return result
 
 def ip_connect(ips):
@@ -109,7 +111,7 @@ def ip_connect(ips):
         s.close()    
     return status
 
-def url_keyword(url):
+def url_keyword(url, log):
     import urllib2
     status = True
     url = 'http://www.google.com/' + url
@@ -118,6 +120,8 @@ def url_keyword(url):
     except urllib2.HTTPError as e:
         if e.code != 404:
             status = False
+    except Exception as e:
+        log.error(str(e) + ' URL: %s' % url)
     return status
 
 def dns_lookup_list(list__, log, server=None):
