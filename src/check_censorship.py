@@ -19,6 +19,7 @@ INDEXES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 165, 284, 301, 302,
            303, 304, 305, 306, 307, 308, 309, 322, 323, 324, 325, 326, 327, 
            329, 330, 331, 332]
 DNS_SERVERS = ['8.8.8.8', '8.26.56.26', '208.67.222.222', '209.244.0.3', '198.153.192.40']
+CORAL_LOOKUP = True
 
 class Website(object):
     
@@ -73,8 +74,8 @@ def dns_lookup(url, progress_count, total_count, csvfile, log, server=None):
         result.dns_server = server
     else:
         # Check whether accessible via Coral
-        result.coral_http_code, result.coral_redirect_ip = coral_status(url, log)
-        pass
+        if CORAL_LOOKUP:    
+            result.coral_http_code, result.coral_redirect_ip = coral_status(url, log)
     try:
         answers = resolver.query(url, 'A')
         result.dns_lookup = True
