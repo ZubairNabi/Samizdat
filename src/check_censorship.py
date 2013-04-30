@@ -53,12 +53,15 @@ def parse_content(content):
     return re.findall(r'href=[\'"]?([^\'" >]+)', content)
 
 def get_list():
-    return filter_list(parse_content(retrieve_content(URL)))
+    return remove_doubles(filter_list(parse_content(retrieve_content(URL))))
 
 def filter_list(list__):
     import re
     return [re.sub(r'http://|https://', r'', list__[index]).rstrip('/')
             for index, _ in enumerate(list__) if index not in INDEXES]
+    
+def remove_doubles(list__):
+    return list(set(list__))
 
 def dns_lookup(url, progress_count, total_count, csvfile, log, server=None):
     print 'Processing website %d of %d' % (progress_count, total_count)
