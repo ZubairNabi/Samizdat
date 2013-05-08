@@ -150,7 +150,8 @@ def http_status(url, log):
         conn.request("GET", "/index.html")
         res = conn.getresponse()
         code = res.status
-        if code == httplib.TEMPORARY_REDIRECT or code == httplib.MOVED_PERMANENTLY:
+        if code == httplib.TEMPORARY_REDIRECT or code == httplib.MOVED_PERMANENTLY \
+        or code == httplib.FOUND:
             redirect_ip = res.getheader('location')   
     except Exception as e:
         log.error(str(e) + ' URL: %s' % url)
